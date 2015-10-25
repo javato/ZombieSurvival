@@ -93,16 +93,18 @@ public class TestActivity extends AppCompatActivity {
                             // Codigo a ejecutar cuando pulsemos "Ajustes..."
                             public void onClick(DialogInterface dialog, int which){
                                 //dialog.dismiss();
-                                Intent intent = new Intent(TestActivity.this, AccesibilidadActivity.class);
-                                startActivity(intent);
+                                //Intent intent = new Intent(TestActivity.this, AccesibilidadActivity.class);
+                                //startActivity(intent);
+                                finish();
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             // Codigo a ejecutar cuando pulsemos "Continuar"
                             public void onClick(DialogInterface dialog, int which) {
                                 //dialog.dismiss();
-                                Intent intent = new Intent(TestActivity.this, MainActivity.class);
-                                startActivity(intent);
+                                //Intent intent = new Intent(TestActivity.this, MainActivity.class);
+                                //startActivity(intent);
+                                finish();
                             }
                         })
                         .create();

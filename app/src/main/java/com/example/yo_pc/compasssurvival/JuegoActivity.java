@@ -1,31 +1,24 @@
 package com.example.yo_pc.compasssurvival;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-public class AccesibilidadActivity extends AppCompatActivity {
+public class JuegoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accesibilidad);
-
+        setContentView(R.layout.activity_juego);
     }
 
-    public void ejecutarTest(View v){
-        Intent intent = new Intent(AccesibilidadActivity.this, TestActivity.class);
-        startActivity(intent);
-    }
 
     /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_accesibilidad, menu);
+        getMenuInflater().inflate(R.menu.menu_juego, menu);
         return true;
     }
 
@@ -43,5 +36,6 @@ public class AccesibilidadActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
     */
 }

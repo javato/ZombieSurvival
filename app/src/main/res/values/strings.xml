@@ -6,4 +6,5 @@
     <string name="title_activity_splash">splashActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_accesibilidad">AccesibilidadActivity</string>
+    <string name="title_activity_juego">JuegoActivity</string>
 </resources>
