@@ -1,5 +1,7 @@
 package com.example.yo_pc.compasssurvival;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,12 +15,25 @@ public class AccesibilidadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accesibilidad);
-
     }
 
     public void ejecutarTest(View v){
         Intent intent = new Intent(AccesibilidadActivity.this, TestActivity.class);
         startActivity(intent);
+    }
+
+    public void aplicarAjustes(View v){
+        AlertDialog.Builder ajustesAlert = new AlertDialog.Builder(this);
+        ajustesAlert.setMessage("Ajustes aplicados")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+                    // Codigo a ejecutar cuando pulsemos "Ajustes..."
+                    public void onClick(DialogInterface dialog, int which){
+                        dialog.dismiss();
+                        //finish();
+                    }
+                })
+                .create();
+        ajustesAlert.show();
     }
 
     /*

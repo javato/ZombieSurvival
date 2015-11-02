@@ -24,45 +24,11 @@
         android:text="Test daltonismo"
         android:id="@+id/buttonEjecutarTest"
         android:onClick="ejecutarTest"
-        android:layout_below="@+id/radioButton4"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New RadioButton"
-        android:id="@+id/radioButton"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New RadioButton"
-        android:id="@+id/radioButton2"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/radioButton"
-        android:layout_alignParentLeft="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New RadioButton"
-        android:id="@+id/radioButton3"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/radioButton2"
-        android:layout_alignParentLeft="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New RadioButton"
-        android:id="@+id/radioButton4"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/radioButton3"
-        android:layout_alignParentLeft="true" />
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,4 +39,55 @@
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/textView3"
+        android:layout_alignEnd="@+id/textView3"
+        android:id="@+id/radioGroup"
+        android:layout_above="@+id/buttonAplicar">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Protanopia"
+            android:id="@+id/radioButton"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deuteranopia"
+            android:id="@+id/radioButton2"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tritanopia"
+            android:id="@+id/radioButton3"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ninguna"
+            android:id="@+id/radioButton4"
+            android:checked="false" />
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aplicar"
+        android:id="@+id/buttonAplicar"
+        android:layout_alignTop="@+id/buttonEjecutarTest"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:onClick="aplicarAjustes"
+        />
 </RelativeLayout>
