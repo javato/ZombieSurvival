@@ -3,12 +3,10 @@ package com.example.yo_pc.compasssurvival;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,34 +17,33 @@ public class MainActivity extends AppCompatActivity {
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        //Intent intent = new Intent(MainActivity.this, TestActivity.class);
-        //startActivity(intent);
-        AlertDialog.Builder ajustesAlert = new AlertDialog.Builder(this);
-        ajustesAlert.setMessage("¿Desea configurar los ajustes de accesibilidad antes de comenzar?")
-                .setPositiveButton("Ajustes...", new DialogInterface.OnClickListener(){
-                    // Codigo a ejecutar cuando pulsemos "Ajustes..."
-                    public void onClick(DialogInterface dialog, int which){
-                        //dialog.dismiss();
-                        Intent intent = new Intent(MainActivity.this, AccesibilidadActivity.class);
-                        startActivity(intent);
-                        //finish();
-                    }
-                })
-                .setNegativeButton("No, ¡dejame en paz!", new DialogInterface.OnClickListener() {
-                    // Codigo a ejecutar cuando pulsemos "Continuar"
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //Intent intent = new Intent(TestActivity.this, MainActivity.class);
-                        //startActivity(intent);
-                        //finish();
-                    }
-                })
-                .create();
-        ajustesAlert.show();
+        SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+
+        if(sp.getInt("popupInicial", 0) == 0){
+            sp.edit().putInt("popupInicial", 1).commit();
+            AlertDialog.Builder ajustesAlert = new AlertDialog.Builder(this);
+            ajustesAlert.setMessage("¿Desea configurar los ajustes de accesibilidad antes de comenzar?")
+                    .setPositiveButton("Ajustes...", new DialogInterface.OnClickListener(){
+                        // Codigo a ejecutar cuando pulsemos "Ajustes..."
+                        public void onClick(DialogInterface dialog, int which){
+                            Intent intent = new Intent(MainActivity.this, AccesibilidadActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("No, ¡dejame en paz!", new DialogInterface.OnClickListener() {
+                        // Codigo a ejecutar cuando pulsemos "Continuar"
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            ajustesAlert.show();
+
+        }
     }
 
     public void startGame(View v){
-        Intent intent = new Intent(MainActivity.this, JuegoActivity.class);
+        Intent intent = new Intent(MainActivity.this, Juego.class);
         startActivity(intent);
     }
 

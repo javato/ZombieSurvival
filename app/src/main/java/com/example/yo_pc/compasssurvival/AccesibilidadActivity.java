@@ -1,20 +1,50 @@
 package com.example.yo_pc.compasssurvival;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 
 public class AccesibilidadActivity extends AppCompatActivity {
 
+    CheckBox vibracion, efectos, musica;
+    Context mContext;
+
+    public void AccesibilidadActivity(Context context){
+        this.mContext = context;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences spp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accesibilidad);
+
+        vibracion = (CheckBox) findViewById(R.id.checkBox);
+        efectos = (CheckBox) findViewById(R.id.checkBox2);
+        musica = (CheckBox) findViewById(R.id.checkBox3);
+
+        //sp.edit().putInt("vibracionEnabled", 1);
+
+        if(spp.getInt("vibracionEnabled", 1) == 1) vibracion.setChecked(true);
+        else vibracion.setChecked(false);
+
+        if(spp.getInt("efectosEnabled", 1) == 1) efectos.setChecked(true);
+        else efectos.setChecked(false);
+
+        if(spp.getInt("musicaEnabled", 1) == 1) musica.setChecked(true);
+        else musica.setChecked(false);
+
+
+
+
     }
 
     public void ejecutarTest(View v){
@@ -23,6 +53,32 @@ public class AccesibilidadActivity extends AppCompatActivity {
     }
 
     public void aplicarAjustes(View v){
+
+        SharedPreferences spp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+
+
+
+        vibracion = (CheckBox) findViewById(R.id.checkBox);
+        efectos = (CheckBox) findViewById(R.id.checkBox2);
+        musica = (CheckBox) findViewById(R.id.checkBox3);
+
+        if(vibracion.isChecked()){
+            spp.edit().putInt("vibracionEnabled", 1).commit();
+        }
+        else spp.edit().putInt("vibracionEnabled", 0).commit();
+
+        if(efectos.isChecked()){
+            spp.edit().putInt("efectosEnabled", 1).commit();
+        }
+        else spp.edit().putInt("efectosEnabled", 0).commit();
+
+        if(musica.isChecked()){
+            spp.edit().putInt("musicaEnabled", 1).commit();
+        }
+        else spp.edit().putInt("musicaEnabled", 0).commit();
+
+        //Log.d("checkbox: ", Integer.toString(spp.getInt("vibracionEnabled", 1)));
+
         AlertDialog.Builder ajustesAlert = new AlertDialog.Builder(this);
         ajustesAlert.setMessage("Ajustes aplicados")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
