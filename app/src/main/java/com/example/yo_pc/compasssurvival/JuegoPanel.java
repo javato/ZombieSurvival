@@ -270,12 +270,16 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private void actualizarRecord(){
-
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
 
         if(jugador.getScore() > spp.getInt("record", 0)){
             spp.edit().putInt("record", jugador.getScore()).commit();
         }
+
+        RankingActivity p = new RankingActivity(jugador.getScore(), "Javi");
+        p.putScore();
+        p.llenarRanking();
+
     }
 
     private void vibrate(int time){

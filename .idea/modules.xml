@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CompassSurvival.iml" filepath="$PROJECT_DIR$/CompassSurvival.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SurvivalCompass.iml" filepath="$PROJECT_DIR$/SurvivalCompass.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.yo_pc.compasssurvival" >
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -24,20 +24,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main"
-            >
+            android:theme="@style/Theme.Main" >
+        </activity>
+
+        <activity
+            android:name=".RankingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Main" >
         </activity>
 
         <activity
             android:name=".Juego"
             android:label="Compass Survival"
-            android:screenOrientation="landscape"
-            >
+            android:screenOrientation="landscape" >
+
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,22 +51,19 @@
             </intent-filter>
             -->
         </activity>
-
         <activity
             android:name=".TestActivity"
             android:label="@string/app_name"
             android:noHistory="true"
-            android:screenOrientation="landscape"
-            >
+            android:screenOrientation="landscape" >
         </activity>
-
         <activity
             android:name=".AccesibilidadActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main"
-            >
+            android:theme="@style/Theme.Main" >
         </activity>
+
 
     </application>
 
