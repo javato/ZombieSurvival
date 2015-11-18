@@ -9,12 +9,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import android.content.Intent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class AccesibilidadActivity extends AppCompatActivity {
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import org.w3c.dom.Text;
+
+public class AccesibilidadActivity extends AppCompatActivity implements OnClickListener {
 
     CheckBox vibracion, efectos, musica;
     Context mContext;
+    Button botonEscanear;
+
+    TextView tvFormat, tvContent;
 
     public void AccesibilidadActivity(Context context){
         this.mContext = context;
@@ -43,6 +64,8 @@ public class AccesibilidadActivity extends AppCompatActivity {
         else musica.setChecked(false);
 
 
+        botonEscanear =(Button) findViewById(R.id.buttonEscanear);
+        botonEscanear.setOnClickListener(this);
 
 
     }
@@ -90,6 +113,68 @@ public class AccesibilidadActivity extends AppCompatActivity {
                 })
                 .create();
         ajustesAlert.show();
+
+        tvFormat = (TextView) findViewById(R.id.tvFormat);
+        tvContent = (TextView) findViewById(R.id.tvContent);
+
+
+    }
+
+    public void onClick(View v){
+        if(v.getId() == R.id.buttonEscanear) {
+            IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+            scanIntegrator.initiateScan();
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        SharedPreferences spp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if(scanningResult != null){
+            String scanContent = scanningResult.getContents();
+            String scanFormat = scanningResult.getFormatName();
+            //tvFormat.setText("FORMAT: " + scanFormat);
+            //tvContent.setText("CONTENT: " + scanContent);
+            if(scanContent.equals("Personaje1")){
+                //Log.d("ENTROOOOOOO AL 1", "SIIIII");
+                spp.edit().putInt("personaje", 1).commit();
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Fijado " + scanContent, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            else if(scanContent.equals("Personaje2")){
+                //Log.d("ENTROOOOOOO AL 2", "SIIIII");
+                spp.edit().putInt("personaje", 2).commit();
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Fijado " + scanContent, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+                //Log.d("ENTROOOOOOO AL 2", "SIIIII");
+
+            else if(scanContent.equals("Personaje3")){
+                spp.edit().putInt("personaje", 3).commit();
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Fijado " + scanContent, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            else{
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "El codigo no corresponde con ningun jugador ", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            /*Toast toast = Toast.makeText(getApplicationContext(),
+                    "Fijado " + scanContent, Toast.LENGTH_SHORT);
+            toast.show();*/
+            Log.d("FORMAT: ", scanFormat);
+            Log.d("CONTENT: ", scanContent);
+            Log.d("Valor pj accesibili: ", Integer.toString(spp.getInt("personaje", 1)));
+        }
+        else{
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Error al leer", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     /*

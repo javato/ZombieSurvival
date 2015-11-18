@@ -10,6 +10,8 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.service.notification.NotificationListenerService;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -86,13 +88,30 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
+        SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
 
         bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo1));
         bg.setVector(-1);
         bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo2));
         bg2.setVector(-5);
 
-        jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador), 66, 40, 3);
+        Log.d("Valor de personaje: ", Integer.toString(spp.getInt("personaje", 1)));
+
+        if(spp.getInt("personaje", 1) == 1){
+            jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador1), 66, 40, 3);
+        }
+
+        if(spp.getInt("personaje", 1) == 2){
+            jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador2), 66, 40, 3);
+        }
+
+        if(spp.getInt("personaje", 1) == 3){
+            jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador3), 66, 40, 3);
+        }
+        if((spp.getInt("personaje", 1) != 1) && (spp.getInt("personaje", 1) != 2) && (spp.getInt("personaje", 1) != 3)){
+            jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador1), 66, 40, 3);
+        }
+
         enemigos = new ArrayList<Enemigo>();
         bordeSuperior = new ArrayList<BordeSuperior>();
         bordeInferior = new ArrayList<BordeInferior>();
@@ -131,6 +150,7 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public void update(){
+        SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
         if(jugador.getPlaying()){
 
             if(bordeInferior.isEmpty()){
@@ -238,7 +258,23 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
                             modoFuria = null;
                             soundPowerUp();
                             jugador.addScore(25);
-                            jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria));
+                            //jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria1));
+
+                            if(spp.getInt("personaje", 1) == 1){
+                                jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria1));
+                            }
+
+                            if(spp.getInt("personaje", 1) == 2){
+                                jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria2));
+                            }
+
+                            if(spp.getInt("personaje", 1) == 3){
+                                jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria3));
+                            }
+                            if((spp.getInt("personaje", 1) != 1) && (spp.getInt("personaje", 1) != 2) && (spp.getInt("personaje", 1) != 3)){
+                                jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria1));
+                            }
+
                         }
 
                         //eliminar rayo si aparece fuera de pantalla
@@ -276,9 +312,11 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
             spp.edit().putInt("record", jugador.getScore()).commit();
         }
 
-        RankingActivity p = new RankingActivity(jugador.getScore(), "Javi");
-        p.putScore();
-        p.llenarRanking();
+
+
+        //RankingActivity p = new RankingActivity(jugador.getScore(), "Javi");
+        //p.putScore();
+        //p.llenarRanking();
 
     }
 

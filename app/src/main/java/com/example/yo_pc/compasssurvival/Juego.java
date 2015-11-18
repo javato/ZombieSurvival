@@ -16,10 +16,6 @@ public class Juego extends Activity{
     private int mpCurrPos;
     Context mContext;
 
-    public void AccesibilidadActivity(Context context){
-        this.mContext = context;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState){

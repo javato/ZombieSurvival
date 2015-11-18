@@ -160,4 +160,30 @@
         android:layout_below="@+id/checkBox2"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Elegir Personaje"
+        android:id="@+id/buttonEscanear"
+        android:layout_alignBottom="@+id/buttonEjecutarTest"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvFormat"
+        android:layout_below="@+id/checkBox3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="47dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvContent"
+        android:layout_below="@+id/tvFormat"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startSettings(View v){
-        Intent intent = new Intent(MainActivity.this, RankingActivity.class);
+        Intent intent = new Intent(MainActivity.this, AccesibilidadActivity.class);
         startActivity(intent);
     }
 
