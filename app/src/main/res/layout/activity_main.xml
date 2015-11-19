@@ -30,4 +30,15 @@
         android:clickable="true"
         android:onClick="startSettings"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ranking"
+        android:id="@+id/buttonRanking"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:onClick="buttonRanking"
+        />
 </RelativeLayout>

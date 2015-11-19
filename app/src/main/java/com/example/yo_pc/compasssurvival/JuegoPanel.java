@@ -314,9 +314,10 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 
 
-        //RankingActivity p = new RankingActivity(jugador.getScore(), "Javi");
-        //p.putScore();
-        //p.llenarRanking();
+        Puntuacion p = new Puntuacion(jugador.getScore(), "Javi");
+
+
+        p.llenarRanking();
 
     }
 

@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void buttonRanking(View v){
+        Intent intent = new Intent(MainActivity.this, RankingActivity.class);
+        startActivity(intent);
+    }
+
     /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

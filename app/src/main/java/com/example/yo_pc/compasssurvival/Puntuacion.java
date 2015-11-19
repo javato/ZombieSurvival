@@ -1,22 +1,67 @@
 package com.example.yo_pc.compasssurvival;
 
-import java.util.ArrayList;
+import android.content.Context;
+import android.location.Geocoder;
+import android.widget.ArrayAdapter;
 
-/**
- * Created by Jvt-WinLaptop on 17/11/2015.
- */
+import java.util.ArrayList;
+import java.util.Locale;
+
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
+
+
+
 public class Puntuacion {
+    Context mContext;
+    static ArrayList<String> ranking = new ArrayList<String>();
     String nombre;
     int puntuacion;
     String localizacion;
-    ArrayList<Puntuacion> p = new ArrayList<Puntuacion>();
-    Puntuacion(int puntuacion, String nombre){
+    static ArrayList<Puntuacion> p = new ArrayList<Puntuacion>();
+    //MiPosicion posicion = new MiPosicion();
+    //RankingActivity r = new RankingActivity();
+
+    public Puntuacion (int puntuacion, String nombre){
         this.puntuacion = puntuacion;
         this.nombre = nombre;
-        localizacion = "Albacete";
+        //getposition();
+        //Geocoder geocoder = new Geocoder(this.mContext, Locale.getDefault());
+        //MiPosicion posicion = new MiPosicion();
+        //this.puntuacion=geocoder.getFromLocation();
     }
-    public void putScore(){
-        p.add(this);
+
+
+    public void llenarRanking(){
+
+        if (!p.isEmpty()){
+            for (int i = 0; i <p.size() ; i++) {
+
+                if(p.get(i).puntuacion<this.puntuacion) {
+
+                    ranking.add(i, this.nombre + " | " + this.puntuacion + " | " + this.localizacion);
+                }
+            }
+        }
+        else {
+            p.add(this);
+            ranking.add( this.nombre + " | " + this.puntuacion + " | " + this.localizacion);
+
+        }
+
+        //r(RankingActivity).actu(ranking, p);
+        //r.actu(ranking, p);
 
     }
+
+    public ArrayList<String> actualizarRanking(){
+        return ranking;
+
+    }
+    public void getposition(){
+        //this.localizacion=posicion.enviarPosicion();
+    }
+
+
 }
