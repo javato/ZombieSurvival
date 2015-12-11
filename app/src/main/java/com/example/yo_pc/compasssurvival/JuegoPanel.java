@@ -90,10 +90,26 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder){
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
 
-        bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo1));
-        bg.setVector(-1);
-        bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo2));
-        bg2.setVector(-5);
+        if(spp.getInt("mapa", 1) == 1){
+            bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo1));
+            bg.setVector(-1);
+            bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo2));
+            bg2.setVector(-5);
+        }
+
+        if(spp.getInt("mapa", 1) == 2){
+            bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo3));
+            bg.setVector(-1);
+            bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo4));
+            bg2.setVector(-5);
+        }
+
+        if(spp.getInt("mapa", 1) == 3){
+            bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo5));
+            bg.setVector(-1);
+            bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo6));
+            bg2.setVector(-5);
+        }
 
         Log.d("Valor de personaje: ", Integer.toString(spp.getInt("personaje", 1)));
 

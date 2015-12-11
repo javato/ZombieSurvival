@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     public void startGame(View v){
         SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
         if(!sp.getString("nombreusuario", "---").equals("---")){
-            Intent intent = new Intent(MainActivity.this, Juego.class);
+            Intent intent = new Intent(MainActivity.this, PopUpMapas.class);
             startActivity(intent);
         }
         else{
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             tvNombreUsuario.setText("Bienvenido " + textMatchlist.get(0).toString());
 
 
-            Log.d("matchlist: ", textMatchlist.get(0).toString());
+            //Log.d("matchlist: ", textMatchlist.get(0).toString());
 
             //super.onActivityResult(requestCode, resultCode, data);
         }
