@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "65929311353",
+    "firebase_url": "https://mi-fabuloso-proyecto-9221e.firebaseio.com",
+    "project_id": "mi-fabuloso-proyecto-9221e",
+    "storage_bucket": "mi-fabuloso-proyecto-9221e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:65929311353:android:3c42e637f2b3d7f8",
+        "android_client_info": {
+          "package_name": "com.example.yo_pc.compasssurvival"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "65929311353-344v1fcc6aofpvh5rq9q0p15ka2nke44.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5KOvWd8DICeYrAlXQ1qgfxOwBWKRBQw4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
