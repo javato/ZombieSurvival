@@ -245,7 +245,7 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
                         soundFailedExplosion();
                         vibrate(100);
                         jugador.addScore(50);
-                    }
+                    } 
                     break;
                 }
 
