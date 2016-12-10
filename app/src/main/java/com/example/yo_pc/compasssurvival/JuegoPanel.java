@@ -20,7 +20,18 @@ import android.os.Vibrator;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import static android.R.attr.name;
+
+public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
+
     public static final int WIDTH = 856;
     public static final int HEIGHT = 480;
     public static final int MOVESPEED = -5;
@@ -55,56 +66,60 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
     int soundId4 = sp2.load(getContext(), R.raw.tot2, 1);
 
 
-    public JuegoPanel(Context context){
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mRecordRef = mRootRef.child("record");
+
+
+    public JuegoPanel(Context context) {
         super(context);
         this.mContext = context;
-        
+
         getHolder().addCallback(this);
-        
+
         setFocusable(true);
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder){
+    public void surfaceDestroyed(SurfaceHolder holder) {
         boolean retry = true;
         int counter = 0;
-        while(retry && counter < 1000){
+        while (retry && counter < 1000) {
             counter++;
-            try{
+            try {
                 thread.setRunning(false);
                 thread.join();
                 retry = false;
                 thread = null;
 
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder){
+    public void surfaceCreated(SurfaceHolder holder) {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
 
-        if(spp.getInt("mapa", 1) == 1){
+        if (spp.getInt("mapa", 1) == 1) {
             bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo1));
             bg.setVector(-1);
             bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo2));
             bg2.setVector(-5);
         }
 
-        if(spp.getInt("mapa", 1) == 2){
+        if (spp.getInt("mapa", 1) == 2) {
             bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo3));
             bg.setVector(-1);
             bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo4));
             bg2.setVector(-5);
         }
 
-        if(spp.getInt("mapa", 1) == 3){
+        if (spp.getInt("mapa", 1) == 3) {
             bg = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo5));
             bg.setVector(-1);
             bg2 = new Fondo(BitmapFactory.decodeResource(getResources(), R.drawable.fondo6));
@@ -113,18 +128,18 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
 
         Log.d("Valor de personaje: ", Integer.toString(spp.getInt("personaje", 1)));
 
-        if(spp.getInt("personaje", 1) == 1){
+        if (spp.getInt("personaje", 1) == 1) {
             jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador1), 66, 40, 3);
         }
 
-        if(spp.getInt("personaje", 1) == 2){
+        if (spp.getInt("personaje", 1) == 2) {
             jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador2), 66, 40, 3);
         }
 
-        if(spp.getInt("personaje", 1) == 3){
+        if (spp.getInt("personaje", 1) == 3) {
             jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador3), 66, 40, 3);
         }
-        if((spp.getInt("personaje", 1) != 1) && (spp.getInt("personaje", 1) != 2) && (spp.getInt("personaje", 1) != 3)){
+        if ((spp.getInt("personaje", 1) != 1) && (spp.getInt("personaje", 1) != 2) && (spp.getInt("personaje", 1) != 3)) {
             jugador = new Jugador(BitmapFactory.decodeResource(getResources(), R.drawable.jugador1), 66, 40, 3);
         }
 
@@ -143,13 +158,13 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
-        if(event.getAction() == MotionEvent.ACTION_DOWN){
-            if(!jugador.getPlaying() && isReady && reset){
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (!jugador.getPlaying() && isReady && reset) {
                 jugador.setPlaying(true);
                 jugador.setUp(true);
             }
-            if(jugador.getPlaying()){
+            if (jugador.getPlaying()) {
 
                 if (!started) started = true;
                 reset = false;
@@ -157,7 +172,7 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
             }
             return true;
         }
-        if(event.getAction() == MotionEvent.ACTION_UP){
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             jugador.setUp(false);
             return true;
         }
@@ -165,15 +180,15 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
         return super.onTouchEvent(event);
     }
 
-    public void update(){
+    public void update() {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(jugador.getPlaying()){
+        if (jugador.getPlaying()) {
 
-            if(bordeInferior.isEmpty()){
+            if (bordeInferior.isEmpty()) {
                 jugador.setPlaying(false);
                 return;
             }
-            if(bordeSuperior.isEmpty()){
+            if (bordeSuperior.isEmpty()) {
                 jugador.setPlaying(false);
                 return;
             }
@@ -183,9 +198,10 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
             jugador.update();
 
             // hay colision en el borde inferior?
-            for(int i = 0; i < bordeInferior.size(); i++){
-                if((collision(bordeInferior.get(i), jugador) || playerOutOfScreen()) && !jugador.getModoFuriaOn()){
+            for (int i = 0; i < bordeInferior.size(); i++) {
+                if ((collision(bordeInferior.get(i), jugador) || playerOutOfScreen()) && !jugador.getModoFuriaOn()) {
                     actualizarRecord();
+                    updateWorldRecord();
                     soundExplosion();
                     vibrate(500);
                     soundTot();
@@ -194,9 +210,10 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
             }
 
             // hay colision en el borde superior?
-            for(int i = 0; i < bordeSuperior.size(); i++){
-                if((collision(bordeSuperior.get(i), jugador) || playerOutOfScreen()) && !jugador.getModoFuriaOn()){
+            for (int i = 0; i < bordeSuperior.size(); i++) {
+                if ((collision(bordeSuperior.get(i), jugador) || playerOutOfScreen()) && !jugador.getModoFuriaOn()) {
                     actualizarRecord();
+                    updateWorldRecord();
                     soundExplosion();
                     vibrate(500);
                     soundTot();
@@ -211,14 +228,13 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
 
             //añadir enemigos
             long enemigoElapsed = (System.nanoTime() - enemigoStartTime) / 1000000;
-            if(enemigoElapsed > (2000 - jugador.getScore() / 4)){
+            if (enemigoElapsed > (2000 - jugador.getScore() / 4)) {
 
                 // el primer misil siempre empieza en el mismo sitio
-                if(enemigos.size() == 0) {
+                if (enemigos.size() == 0) {
                     enemigos.add(new Enemigo(BitmapFactory.decodeResource(getResources(), R.drawable.zombie),
                             WIDTH + 10, HEIGHT / 2, 45, 15, jugador.getScore(), 13));
-                }
-                else{
+                } else {
                     enemigos.add(new Enemigo(BitmapFactory.decodeResource(getResources(), R.drawable.zombie),
                             WIDTH + 10, (int) (rand.nextDouble() * (HEIGHT - (tamBordes * 2)) + tamBordes), 45, 15, jugador.getScore(), 13));
                 }
@@ -227,31 +243,31 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
                 enemigoStartTime = System.nanoTime();
             }
             // colision con un enemigo?
-            for(int i = 0; i < enemigos.size(); i++){
+            for (int i = 0; i < enemigos.size(); i++) {
                 //update enemigos
                 enemigos.get(i).update();
 
-                if(collision(enemigos.get(i), jugador)){
+                if (collision(enemigos.get(i), jugador)) {
                     enemigos.remove(i);
 
-                    if(!jugador.getModoFuriaOn()){
+                    if (!jugador.getModoFuriaOn()) {
                         actualizarRecord();
+                        updateWorldRecord();
                         soundExplosion();
                         vibrate(500);
                         soundTot();
                         jugador.setPlaying(false);
-                    }
-                    else{
+                    } else {
                         soundFailedExplosion();
                         vibrate(100);
                         jugador.addScore(50);
-                    } 
+                    }
                     break;
                 }
 
 
                 //eliminar enemigo si aparece fuera de pantalla
-                if(enemigos.get(i).getX() < -100){
+                if (enemigos.get(i).getX() < -100) {
                     enemigos.remove(i);
                     break;
                 }
@@ -259,51 +275,50 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
 
                 // añadir rayos para modo furia
                 long elapsed = (System.nanoTime() - powerUpTime) / 1000000;
-                if (elapsed > 120){
-                    if (modoFuria == null){
+                if (elapsed > 120) {
+                    if (modoFuria == null) {
                         modoFuria = new ModoFuria(BitmapFactory.decodeResource(getResources(), R.drawable.rayo),
                                 WIDTH + 10, (int) (rand.nextDouble() * (HEIGHT - (tamBordes * 2)) + tamBordes), 45, 15, jugador.getScore(), 13);
 
                     }
-                    if (modoFuria != null){
+                    if (modoFuria != null) {
                         //update modoFuria
                         modoFuria.update();
 
                         //comprueba que haya colision mientras tenemos modo furia para matar al enemigo
-                        if (collision(modoFuria, jugador)){
+                        if (collision(modoFuria, jugador)) {
                             modoFuria = null;
                             soundPowerUp();
                             jugador.addScore(25);
                             //jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria1));
 
-                            if(spp.getInt("personaje", 1) == 1){
+                            if (spp.getInt("personaje", 1) == 1) {
                                 jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria1));
                             }
 
-                            if(spp.getInt("personaje", 1) == 2){
+                            if (spp.getInt("personaje", 1) == 2) {
                                 jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria2));
                             }
 
-                            if(spp.getInt("personaje", 1) == 3){
+                            if (spp.getInt("personaje", 1) == 3) {
                                 jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria3));
                             }
-                            if((spp.getInt("personaje", 1) != 1) && (spp.getInt("personaje", 1) != 2) && (spp.getInt("personaje", 1) != 3)){
+                            if ((spp.getInt("personaje", 1) != 1) && (spp.getInt("personaje", 1) != 2) && (spp.getInt("personaje", 1) != 3)) {
                                 jugador.PowerUpOn(BitmapFactory.decodeResource(getResources(), R.drawable.jugadormodofuria1));
                             }
 
                         }
 
                         //eliminar rayo si aparece fuera de pantalla
-                        else if(modoFuria.getX() < -100){
+                        else if (modoFuria.getX() < -100) {
                             modoFuria = null;
                         }
                     }
                 }
             }
-        }
-        else{
+        } else {
             jugador.resetDY();
-            if (!reset){
+            if (!reset) {
                 isReady = false;
                 startReset = System.nanoTime();
                 reset = true;
@@ -315,19 +330,18 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
             explosion.update();
             long resetElapsed = (System.nanoTime() - startReset) / 1000000;
 
-            if (resetElapsed > 2500 && !isReady){
+            if (resetElapsed > 2500 && !isReady) {
                 newGame();
             }
         }
     }
 
-    private void actualizarRecord(){
+    private void actualizarRecord() {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
 
-        if(jugador.getScore() > spp.getInt("record", 0)){
+        if (jugador.getScore() > spp.getInt("record", 0)) {
             spp.edit().putInt("record", jugador.getScore()).commit();
         }
-
 
 
         Puntuacion p = new Puntuacion(jugador.getScore(), "Javi");
@@ -337,86 +351,100 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
 
     }
 
-    private void vibrate(int time){
+    private void actualizarRecordMundial() {
+        SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+
+
+        if (jugador.getScore() > spp.getInt("record", 0)) {
+            spp.edit().putInt("record", jugador.getScore()).commit();
+        }
+
+
+        Puntuacion p = new Puntuacion(jugador.getScore(), "Javi");
+
+
+    }
+
+    private void vibrate(int time) {
         Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
 
-        if(spp.getInt("vibracionEnabled",1)==1) {
+        if (spp.getInt("vibracionEnabled", 1) == 1) {
             v.vibrate(time);
         }
     }
 
-    private void soundExplosion(){
+    private void soundExplosion() {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(spp.getInt("efectosEnabled", 1) == 1)
+        if (spp.getInt("efectosEnabled", 1) == 1)
             sp.play(soundId, .4f, .4f, 0, 0, 1);
     }
 
-    private void soundFailedExplosion(){
+    private void soundFailedExplosion() {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(spp.getInt("efectosEnabled", 1) == 1)
+        if (spp.getInt("efectosEnabled", 1) == 1)
             sp.play(soundId2, .9f, .9f, 0, 0, 1);
     }
 
-    private void soundPowerUp(){
+    private void soundPowerUp() {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(spp.getInt("efectosEnabled", 1) == 1)
+        if (spp.getInt("efectosEnabled", 1) == 1)
             sp.play(soundId3, .5f, .5f, 0, 0, 1);
     }
 
-    private void soundTot(){
+    private void soundTot() {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(spp.getInt("efectosEnabled", 1) == 1)
+        if (spp.getInt("efectosEnabled", 1) == 1)
             sp2.play(soundId4, .9f, .9f, 0, 0, 1);
     }
 
-    public boolean playerOutOfScreen(){
-        if(jugador.getY() < 0 || jugador.getY() > HEIGHT) return true;
+    public boolean playerOutOfScreen() {
+        if (jugador.getY() < 0 || jugador.getY() > HEIGHT) return true;
         return false;
     }
 
-    public boolean collision(JuegoObjeto a, JuegoObjeto b){
-        if(Rect.intersects(a.getRectangle(), b.getRectangle())){
+    public boolean collision(JuegoObjeto a, JuegoObjeto b) {
+        if (Rect.intersects(a.getRectangle(), b.getRectangle())) {
             return true;
         }
         return false;
     }
 
     @Override
-    public void draw(Canvas canvas){
+    public void draw(Canvas canvas) {
         final float scaleFactorX = getWidth() / (WIDTH * 1.f);
         final float scaleFactorY = getHeight() / (HEIGHT * 1.f);
 
-        if(canvas != null){
+        if (canvas != null) {
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
             bg.draw(canvas);
             bg2.draw(canvas);
 
-            if(!dissapear){
+            if (!dissapear) {
                 jugador.draw(canvas);
             }
 
             //dibujar rayo
-            if(modoFuria != null) modoFuria.draw(canvas);
+            if (modoFuria != null) modoFuria.draw(canvas);
 
             //dibujar enemigos
-            for(Enemigo m : enemigos){
+            for (Enemigo m : enemigos) {
                 m.draw(canvas);
             }
 
 
             //dibujar bordeSuperior
-            for(BordeSuperior tb : bordeSuperior){
+            for (BordeSuperior tb : bordeSuperior) {
                 tb.draw(canvas);
             }
 
             //dibujar bordeInferior
-            for(BordeInferior bb : bordeInferior){
+            for (BordeInferior bb : bordeInferior) {
                 bb.draw(canvas);
             }
             //dibujar explosion
-            if(started){
+            if (started) {
                 explosion.draw(canvas);
             }
             drawText(canvas);
@@ -424,12 +452,12 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
-    public void actualizarBordeSuperior(){
+    public void actualizarBordeSuperior() {
 
         //actualizar borde superior
-        for(int i = 0; i < bordeSuperior.size(); i++){
+        for (int i = 0; i < bordeSuperior.size(); i++) {
             bordeSuperior.get(i).update();
-            if (bordeSuperior.get(i).getX() < -30){
+            if (bordeSuperior.get(i).getX() < -30) {
                 //elimina elemento del arraylist y mete uno nuevo
 
                 bordeSuperior.remove(i);
@@ -442,17 +470,17 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
 
     }
 
-    public void actualizarBordeInferior(){
+    public void actualizarBordeInferior() {
 
         //actualizar borde inferior
-        for(int i = 0; i < bordeInferior.size(); i++){
+        for (int i = 0; i < bordeInferior.size(); i++) {
 
             //elimina elemento del arraylist y mete uno nuevo
 
             bordeInferior.get(i).update();
 
 
-            if(bordeInferior.get(i).getX() < -30){
+            if (bordeInferior.get(i).getX() < -30) {
                 bordeInferior.remove(i);
 
                 bordeInferior.add(new BordeInferior(BitmapFactory.decodeResource(getResources(), R.drawable.pinchoinferior
@@ -462,7 +490,7 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
-    public void newGame(){
+    public void newGame() {
         dissapear = false;
 
         bordeInferior.clear();
@@ -478,14 +506,14 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
         modoFuria = null;
 
 
-        for(int i = 0; i * 30 < WIDTH + 40; i++){
+        for (int i = 0; i * 30 < WIDTH + 40; i++) {
             // crea primer borde superior
 
             bordeSuperior.add(new BordeSuperior(BitmapFactory.decodeResource(getResources(), R.drawable.pinchosuperior
             ), i * 30, 0, 30));
         }
 
-        for(int i = 0; i * 30 < WIDTH + 40; i++){
+        for (int i = 0; i * 30 < WIDTH + 40; i++) {
             // crea primer borde inferior
 
             bordeInferior.add(new BordeInferior(BitmapFactory.decodeResource(getResources(), R.drawable.pinchoinferior)
@@ -494,17 +522,24 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
         isReady = true;
     }
 
-    public void drawText(Canvas canvas){
+    public void drawText(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setTextSize(30);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        canvas.drawText("Puntuacion: " + (jugador.getScore()), 10, HEIGHT - 10, paint);
+        canvas.drawText("Score: " + (jugador.getScore()), 10, HEIGHT - 10, paint);
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
         int best = spp.getInt("record", 0);
-        canvas.drawText("Record: " + best, WIDTH - 215, HEIGHT - 10, paint);
+        updateWorldRecord();
+        int worldBest = spp.getInt("worldRecord", 0);
+        //original -> canvas.drawText("Record: " + best, WIDTH - 215, HEIGHT - 10, paint);
+        canvas.drawText("World Record: " + worldBest, WIDTH - 320, HEIGHT - 10, paint);
+        canvas.drawText("Record: " + best, WIDTH - 610, HEIGHT - 10, paint);
 
-        if(!jugador.getPlaying() && isReady && reset){
+
+
+
+        if (!jugador.getPlaying() && isReady && reset) {
             Paint paint1 = new Paint();
             paint1.setColor(Color.WHITE);
             paint1.setTextSize(40);
@@ -512,4 +547,39 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback{
             canvas.drawText("Toque para iniciar", WIDTH / 2 - 60, HEIGHT / 2, paint1);
         }
     }
+
+    public void updateWorldRecord(){
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference WorldRecord = mRootRef.child("WorldRecord");
+        //Log.d("text:", FirebaseDatabase.getInstance().getReference().toString());
+
+        final SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+        WorldRecord.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                int value = dataSnapshot.getValue(Integer.class);
+                spp.edit().putInt("worldRecord", value).commit();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        if (jugador.getScore() > spp.getInt("worldRecord", 0)) {
+            WorldRecord.setValue(jugador.getScore());
+        }
+    }
+
+
+    public void createDataUser(){
+        //Firebase ref1 = new Firebase("https://mi-fabuloso-proyecto-9221e.firebaseio.com/users");
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        //Log.d("text:", FirebaseDatabase.getInstance().getReference().toString());
+        mRootRef.child("users").push().setValue("uid");
+    }
+
+
 }

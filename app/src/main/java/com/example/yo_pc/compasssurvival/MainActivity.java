@@ -21,6 +21,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +38,23 @@ public class MainActivity extends AppCompatActivity {
     String nombreUsuario;
     TextView tvNombreUsuario;
 
+    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //getSupportActionBar().setHomeButtonEnabled(true);
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        //get firebase auth instance
+        //auth = FirebaseAuth.getInstance();
+
+        //get current user
+        //final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
 
         tvNombreUsuario = (TextView) findViewById(R.id.tvNombreUsuario);
 
@@ -76,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void startGame(View v){
         SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(!sp.getString("nombreusuario", "---").equals("---")){
+        if(1==1){
+        // original -> if(!sp.getString("nombreusuario", "---").equals("---")){
             Intent intent = new Intent(MainActivity.this, PopUpMapas.class);
             startActivity(intent);
         }
@@ -104,6 +123,43 @@ public class MainActivity extends AppCompatActivity {
 
 
         startActivityForResult(intent, 1001);
+    }
+
+    public void buttonProfile(View v){
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        startActivity(intent);
+
+
+        /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    // user auth state is changed - user is null
+                    // launch login activity
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+            }
+
+        };
+
+        if (user != null) {
+            user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "Failed to delete your account!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }*/
+
     }
 
 

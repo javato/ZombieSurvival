@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.yo_pc.compasssurvival" >
+    package="com.example.yo_pc.compasssurvival">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
 
         <!-- android:theme="@android:style/Theme.NoTitleBar" -->
 
         <activity
-            android:name=".splashActivity"
+            android:name=".ProfileActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Main" >
+        </activity>
+
+        <activity android:name=".splashActivity"
             android:label="@string/app_name"
             android:noHistory="true"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Splash" >
+            android:theme="@style/Theme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,20 +35,18 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main" >
-        </activity>
-
+            android:theme="@style/Theme.Main"
+            android:noHistory="true"
+            />
         <activity
             android:name=".RankingActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main" >
-        </activity>
-
+            android:theme="@style/Theme.Main" />
         <activity
             android:name=".Juego"
             android:label="Compass Survival"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
 
             <!--
             <intent-filter>
@@ -55,31 +60,37 @@
             android:name=".TestActivity"
             android:label="@string/app_name"
             android:noHistory="true"
-            android:screenOrientation="landscape" >
-        </activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".AccesibilidadActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main" >
-        </activity>
-
+            android:theme="@style/Theme.Main" />
         <activity
             android:name="com.google.zxing.client.android.CaptureActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main" >
-        </activity>
-
+            android:theme="@style/Theme.Main" />
         <activity
             android:name=".PopUpMapas"
             android:label="Compass Survival"
+            android:noHistory="true"
             android:screenOrientation="landscape"
-            android:theme="@style/AppTheme.CustomTheme"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity
+            android:name=".SignupActivity"
+            android:label="@string/title_activity_signup"
+            android:theme="@style/AppTheme"
+            android:noHistory="true"
+            />
+        <activity android:name=".LoginActivity">
+
             android:noHistory="true"
 
-            >
         </activity>
+        <activity android:name=".ResetPasswordActivity"
+            android:noHistory="true"
+            />
 
     </application>
 
