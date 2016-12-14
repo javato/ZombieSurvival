@@ -27,11 +27,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    public String welcome;
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
 
@@ -60,15 +67,55 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
 
+        //get firebase auth instance
+        auth = FirebaseAuth.getInstance();
+
+        //get current user
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    // user auth state is changed - user is null
+                    // launch login activity
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+            }
+        };
+
+        //modify data of the logged user
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = mRootRef.child("users").child(user.getUid());
+
+        ref.child("name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                welcome = dataSnapshot.getValue(String.class);
+                //spp.edit().putInt("worldRecord", value).commit();
+                //Log.d("NAMEEEEEEEEE: ", welcome);
+                tvNombreUsuario.setText(welcome.toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //Log.d("LLEGAAAAAAAAAAAAAA ", welcome);
+
+
         //tvNombreUsuario.setText("pepito");
-        if(!sp.getString("nombreusuario", "---").equals("---")){
+        /*if(!sp.getString("nombreusuario", "---").equals("---")){
             tvNombreUsuario.setText("Bienvenido " + sp.getString("nombreusuario", "---"));
         }
         else{
             tvNombreUsuario.setText("Nombre de usuario no establecido");
-        }
+        }*/
 
-        if(sp.getInt("popupInicial", 0) == 0){
+        /*if(sp.getInt("popupInicial", 0) == 0){
             sp.edit().putInt("popupInicial", 1).commit();
             AlertDialog.Builder ajustesAlert = new AlertDialog.Builder(this);
             ajustesAlert.setMessage("¿Desea configurar los ajustes de accesibilidad antes de comenzar?")
@@ -88,19 +135,18 @@ public class MainActivity extends AppCompatActivity {
                     .create();
             ajustesAlert.show();
 
-        }
+        }*/
 
     }
 
     public void startGame(View v){
         SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(1==1){
-        // original -> if(!sp.getString("nombreusuario", "---").equals("---")){
+        if(!welcome.toString().equals("Name doesn't establisheddd")){
             Intent intent = new Intent(MainActivity.this, PopUpMapas.class);
             startActivity(intent);
         }
         else{
-            showToastMessage("¡Espera, quiero saber como te llamas!");
+            showToastMessage("Wait, I need your name!");
         }
 
     }
@@ -118,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     public void buttonNombreUsuario(View v){
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Diga su nombre");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say your name");
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 
 
@@ -168,9 +214,24 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             tvNombreUsuario = (TextView) findViewById(R.id.tvNombreUsuario);
             ArrayList<String> textMatchlist = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String nameUser = textMatchlist.get(0).toString();
 
-            sp.edit().putString("nombreusuario", textMatchlist.get(0).toString()).commit();
-            tvNombreUsuario.setText("Bienvenido " + textMatchlist.get(0).toString());
+            welcome = textMatchlist.get(0).toString();
+
+
+            //get firebase auth instance
+            auth = FirebaseAuth.getInstance();
+
+            //get current user
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            //modify name of the logged user
+            DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference ref = mRootRef.child("users").child(user.getUid());
+            ref.child("name").setValue(nameUser);
+
+            //sp.edit().putString("nombreusuario", nameUser).commit();
+            //tvNombreUsuario.setText("welcome " + nameUser);
 
 
             //Log.d("matchlist: ", textMatchlist.get(0).toString());

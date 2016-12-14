@@ -69,6 +69,10 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference mRecordRef = mRootRef.child("record");
 
+    private FirebaseAuth auth;
+
+    public int record, worldRecord;
+
 
     public JuegoPanel(Context context) {
         super(context);
@@ -77,6 +81,8 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
 
         setFocusable(true);
+
+
     }
 
     @Override
@@ -337,7 +343,54 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void actualizarRecord() {
+        final SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+
+
+        //get firebase auth instance
+        auth = FirebaseAuth.getInstance();
+
+        //get current user
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //modify data of the logged user
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = mRootRef.child("users").child(user.getUid());
+
+        ref.child("record").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                record = dataSnapshot.getValue(Integer.class);
+                //int record = dataSnapshot.getValue(Integer.class);
+                //spp.edit().putInt("worldRecord", value).commit();
+                //spp.edit().putInt("record", record).commit();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //if (jugador.getScore() > spp.getInt("record", 0)) {
+        if (jugador.getScore() > record) {
+            //spp.edit().putInt("record", jugador.getScore()).commit();
+
+
+
+            ref.child("record").setValue(jugador.getScore());
+        }
+
+
+        //Puntuacion p = new Puntuacion(jugador.getScore(), "Javi");
+
+
+        //p.llenarRanking();
+
+    }
+
+    /*private void actualizarRecordMundial() {
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+
 
         if (jugador.getScore() > spp.getInt("record", 0)) {
             spp.edit().putInt("record", jugador.getScore()).commit();
@@ -347,23 +400,7 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
         Puntuacion p = new Puntuacion(jugador.getScore(), "Javi");
 
 
-        p.llenarRanking();
-
-    }
-
-    private void actualizarRecordMundial() {
-        SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-
-
-        if (jugador.getScore() > spp.getInt("record", 0)) {
-            spp.edit().putInt("record", jugador.getScore()).commit();
-        }
-
-
-        Puntuacion p = new Puntuacion(jugador.getScore(), "Javi");
-
-
-    }
+    }*/
 
     private void vibrate(int time) {
         Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -491,6 +528,9 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void newGame() {
+
+        //spp.edit().putInt("record", record).commit();
+
         dissapear = false;
 
         bordeInferior.clear();
@@ -504,6 +544,9 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
         jugador.resetScore();
         jugador.setY(HEIGHT / 2);
         modoFuria = null;
+
+        SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
+        spp.edit().putInt("record", 0).commit();
 
 
         for (int i = 0; i * 30 < WIDTH + 40; i++) {
@@ -530,12 +573,15 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText("Score: " + (jugador.getScore()), 10, HEIGHT - 10, paint);
         SharedPreferences spp = this.getContext().getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
         int best = spp.getInt("record", 0);
+        actualizarRecord();
         updateWorldRecord();
         int worldBest = spp.getInt("worldRecord", 0);
         //original -> canvas.drawText("Record: " + best, WIDTH - 215, HEIGHT - 10, paint);
-        canvas.drawText("World Record: " + worldBest, WIDTH - 320, HEIGHT - 10, paint);
-        canvas.drawText("Record: " + best, WIDTH - 610, HEIGHT - 10, paint);
 
+        //canvas.drawText("World Record: " + worldBest, WIDTH - 320, HEIGHT - 10, paint);
+        //canvas.drawText("Record: " + best, WIDTH - 610, HEIGHT - 10, paint);
+        canvas.drawText("World Record: " + worldRecord, WIDTH - 320, HEIGHT - 10, paint);
+        canvas.drawText("Record: " + record, WIDTH - 610, HEIGHT - 10, paint);
 
 
 
@@ -557,9 +603,9 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
         WorldRecord.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                int value = dataSnapshot.getValue(Integer.class);
-                spp.edit().putInt("worldRecord", value).commit();
+                worldRecord = dataSnapshot.getValue(Integer.class);
+                //int value = dataSnapshot.getValue(Integer.class);
+                //spp.edit().putInt("worldRecord", value).commit();
             }
 
             @Override
@@ -568,7 +614,8 @@ public class JuegoPanel extends SurfaceView implements SurfaceHolder.Callback {
             }
         });
 
-        if (jugador.getScore() > spp.getInt("worldRecord", 0)) {
+        //if (jugador.getScore() > spp.getInt("worldRecord", 0)) {
+        if (jugador.getScore() > worldRecord) {
             WorldRecord.setValue(jugador.getScore());
         }
     }

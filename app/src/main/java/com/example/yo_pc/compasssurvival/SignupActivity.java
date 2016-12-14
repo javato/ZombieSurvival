@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -37,6 +42,8 @@ public class SignupActivity extends AppCompatActivity {
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
+
+        //User newUser;
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +88,19 @@ public class SignupActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                Log.d("UIDDDDDDDDDDDDDDDDDDD ", user.getUid());
+                                User newUser = new User();
+
+                                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+                                //mRootRef.child("users").push().setValue("uid");
+                                //mRootRef.setValue("hola");
+                                mRootRef.child("users").child(user.getUid()).setValue(newUser);
+
+                                //DatabaseReference WorldRecord = mRootRef.child("users").child(user.getUid());
+
+
+
                                 progressBar.setVisibility(View.GONE);
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
