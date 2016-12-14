@@ -1,4 +1,4 @@
-package com.google.zxing.integration.android;
+package com.example.yo_pc.compasssurvival;
 
 public class User {
 
