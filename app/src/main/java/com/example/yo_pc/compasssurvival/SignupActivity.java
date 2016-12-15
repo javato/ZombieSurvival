@@ -89,16 +89,10 @@ public class SignupActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                Log.d("UIDDDDDDDDDDDDDDDDDDD ", user.getUid());
-                                User newUser = new User();
 
-                                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-                                //mRootRef.child("users").push().setValue("uid");
-                                //mRootRef.setValue("hola");
-                                mRootRef.child("users").child(user.getUid()).setValue(newUser);
 
                                 //DatabaseReference WorldRecord = mRootRef.child("users").child(user.getUid());
+
 
 
 
@@ -110,7 +104,18 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    Log.d("UIDDDDDDDDDDDDDDDDDDD ", user.getUid());
+                                    User newUser = new User();
+
+                                    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+                                    //mRootRef.child("users").push().setValue("uid");
+                                    //mRootRef.setValue("hola");
+                                    mRootRef.child("users").child(user.getUid()).setValue(newUser);
+
+                                    sendEmailConfirmation();
+                                    auth.signOut();
+                                    startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                                     finish();
                                 }
                             }
@@ -118,6 +123,22 @@ public class SignupActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void sendEmailConfirmation(){
+        auth.getCurrentUser().sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SignupActivity.this, "Email confirmation is sent", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                        } else {
+                            Toast.makeText(SignupActivity.this, "Failed to send confirmation email", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
+                });
     }
 
     @Override

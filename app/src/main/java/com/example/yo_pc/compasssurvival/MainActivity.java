@@ -101,10 +101,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-
-
-
-
         //modify data of the logged user
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = mRootRef.child("users").child(user.getUid());
@@ -115,7 +111,14 @@ public class MainActivity extends AppCompatActivity {
                 welcome = dataSnapshot.getValue(String.class);
                 //spp.edit().putInt("worldRecord", value).commit();
                 //Log.d("NAMEEEEEEEEE: ", welcome);
-                tvNombreUsuario.setText(welcome.toString());
+
+                if(welcome != null){
+                    tvNombreUsuario.setText(welcome.toString());
+                }
+                else{
+                    welcome = " ";
+                }
+
             }
 
             @Override
@@ -123,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        //Log.d("LLEGAAAAAAAAAAAAAA ", welcome);
 
 
         //tvNombreUsuario.setText("pepito");
@@ -163,10 +165,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
         //FirebaseAuth auth1;
         //auth1 = FirebaseAuth.getInstance();
-        if(auth.getCurrentUser().isEmailVerified() == false){
-            showToastMessage("Email not confirmed, please, go to profile and make it!");
-        }
-        else if(!welcome.toString().equals("Name doesn't establisheddd")){
+
+        if(!welcome.toString().equals("Name doesn't establisheddd")){
             Intent intent = new Intent(MainActivity.this, PopUpMapas.class);
             startActivity(intent);
         }
@@ -254,14 +254,6 @@ public class MainActivity extends AppCompatActivity {
             DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
             DatabaseReference ref = mRootRef.child("users").child(user.getUid());
             ref.child("name").setValue(nameUser);
-
-            //sp.edit().putString("nombreusuario", nameUser).commit();
-            //tvNombreUsuario.setText("welcome " + nameUser);
-
-
-            //Log.d("matchlist: ", textMatchlist.get(0).toString());
-
-            //super.onActivityResult(requestCode, resultCode, data);
         }
 
     }

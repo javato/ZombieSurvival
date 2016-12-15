@@ -30,6 +30,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+    private String uid;
+    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        uid = user.getUid().toString();
 
         Log.d("uid ", user.getUid());
 
@@ -265,10 +269,11 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+
         btnRemoveUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String uid = user.getUid();
+
 
                 progressBar.setVisibility(View.VISIBLE);
 
@@ -279,12 +284,12 @@ public class ProfileActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(ProfileActivity.this, "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
-                                        deleteData(uid);
-                                        MainActivity.fa.finish();
-                                        //startActivity(new Intent(ProfileActivity.this, SignupActivity.class));
-                                        finish();
 
+                                        MainActivity.fa.finish(); //finish mainActivity
                                         progressBar.setVisibility(View.GONE);
+                                        finish();
+                                        mRootRef.child("users").child(user.getUid()).removeValue();
+
 
                                     } else {
                                         Toast.makeText(ProfileActivity.this, "Failed to delete your account!", Toast.LENGTH_SHORT).show();
@@ -292,6 +297,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+
                 }
             }
         });
@@ -317,16 +323,6 @@ public class ProfileActivity extends AppCompatActivity {
         Toast.makeText(ProfileActivity.this, "signed out", Toast.LENGTH_SHORT).show();
     }
 
-    public void deleteData(String uid){
-        //final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        //Log.d("UIDDDDDDDDDDDDDDDDDDD ", user.getUid());
-        //User newUser = new User();
-
-        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-
-        mRootRef.child("users").child(uid).removeValue();
-        //auth.getCurrentUser().getUid()
-    }
 
     @Override
     protected void onResume() {
