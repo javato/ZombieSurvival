@@ -1,5 +1,6 @@
 package com.example.yo_pc.compasssurvival;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
@@ -38,7 +39,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static Activity fa;
     public String welcome;
+    public boolean emailVerified;
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
 
@@ -50,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        fa = this;
+
         super.onCreate(savedInstanceState);
         //getSupportActionBar().setHomeButtonEnabled(true);
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -77,6 +82,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+                /*Log.d("ANTES DEL IF: ", Boolean.toString(user.isEmailVerified()));
+                if(user.isEmailVerified() == false){
+                    emailVerified = false;
+                    Log.d("PRIMER IF: ", Boolean.toString(emailVerified));
+                }
+                else{
+                    emailVerified = true;
+                    Log.d("SEGUNDO IF: ", Boolean.toString(emailVerified));
+                }*/
+
                 if (user == null) {
                     // user auth state is changed - user is null
                     // launch login activity
@@ -85,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+
+
+
 
         //modify data of the logged user
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -140,8 +159,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startGame(View v){
+
         SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if(!welcome.toString().equals("Name doesn't establisheddd")){
+        //FirebaseAuth auth1;
+        //auth1 = FirebaseAuth.getInstance();
+        if(auth.getCurrentUser().isEmailVerified() == false){
+            showToastMessage("Email not confirmed, please, go to profile and make it!");
+        }
+        else if(!welcome.toString().equals("Name doesn't establisheddd")){
             Intent intent = new Intent(MainActivity.this, PopUpMapas.class);
             startActivity(intent);
         }

@@ -16,6 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import static java.lang.Thread.sleep;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -113,6 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(ProfileActivity.this, "Email address is updated. Please sign in with new email id!", Toast.LENGTH_LONG).show();
                                         signOut();
+                                        MainActivity.fa.finish();
                                         progressBar.setVisibility(View.GONE);
                                     } else {
                                         Toast.makeText(ProfileActivity.this, "Failed to update email!", Toast.LENGTH_LONG).show();
@@ -157,6 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             Toast.makeText(ProfileActivity.this, "Password is updated, sign in with new password!", Toast.LENGTH_SHORT).show();
                                             signOut();
+                                            MainActivity.fa.finish();
                                             progressBar.setVisibility(View.GONE);
                                         } else {
                                             Toast.makeText(ProfileActivity.this, "Failed to update password!", Toast.LENGTH_SHORT).show();
@@ -173,7 +179,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        btnSendResetEmail.setOnClickListener(new View.OnClickListener() {
+        /*btnSendResetEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 oldEmail.setVisibility(View.VISIBLE);
@@ -185,9 +191,9 @@ public class ProfileActivity extends AppCompatActivity {
                 sendEmail.setVisibility(View.VISIBLE);
                 remove.setVisibility(View.GONE);
             }
-        });
+        });*/
 
-        sendEmail.setOnClickListener(new View.OnClickListener() {
+        /*sendEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
@@ -210,12 +216,62 @@ public class ProfileActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                 }
             }
+        });*/
+
+        btnSendResetEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    auth.getCurrentUser().sendEmailVerification()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ProfileActivity.this, "Email confirmation is sent", Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
+                                } else {
+                                    Toast.makeText(ProfileActivity.this, "Failed to send confirmation email", Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+
+            }
+        });
+
+        sendEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                if (!oldEmail.getText().toString().trim().equals("")) {
+                    auth.getCurrentUser().sendEmailVerification()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(ProfileActivity.this, "Email confirmation is sent", Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                    } else {
+                                        Toast.makeText(ProfileActivity.this, "Failed to send confirmation email", Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                }
+                else {
+                    oldEmail.setError("Enter email");
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
         });
 
         btnRemoveUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String uid = user.getUid();
+
                 progressBar.setVisibility(View.VISIBLE);
+
                 if (user != null) {
                     user.delete()
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -223,9 +279,13 @@ public class ProfileActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(ProfileActivity.this, "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(ProfileActivity.this, SignupActivity.class));
+                                        deleteData(uid);
+                                        MainActivity.fa.finish();
+                                        //startActivity(new Intent(ProfileActivity.this, SignupActivity.class));
                                         finish();
+
                                         progressBar.setVisibility(View.GONE);
+
                                     } else {
                                         Toast.makeText(ProfileActivity.this, "Failed to delete your account!", Toast.LENGTH_SHORT).show();
                                         progressBar.setVisibility(View.GONE);
@@ -242,18 +302,30 @@ public class ProfileActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 auth.signOut();
                 Toast.makeText(ProfileActivity.this, "signed out", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(ProfileActivity.this, SignupActivity.class));
+                MainActivity.fa.finish();
+                startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
                 finish();
             }
         });
 
     }
 
+
     //sign out method
     public void signOut() {
         auth.signOut();
         Toast.makeText(ProfileActivity.this, "signed out", Toast.LENGTH_SHORT).show();
+    }
 
+    public void deleteData(String uid){
+        //final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //Log.d("UIDDDDDDDDDDDDDDDDDDD ", user.getUid());
+        //User newUser = new User();
+
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+
+        mRootRef.child("users").child(uid).removeValue();
+        //auth.getCurrentUser().getUid()
     }
 
     @Override

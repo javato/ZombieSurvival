@@ -79,17 +79,17 @@
         <activity
             android:name=".SignupActivity"
             android:label="@string/title_activity_signup"
-            android:theme="@style/AppTheme"
-            android:noHistory="true"
-            />
-        <activity android:name=".LoginActivity"
-            android:noHistory="true"
-        />
+            android:theme="@style/AppTheme"/>
+        <!--android:noHistory="true"-->
 
-        <activity android:name=".ResetPasswordActivity"
-            android:noHistory="true"
-            />
+        <activity android:name=".LoginActivity"/>
+        <!--android:noHistory="true"-->
 
-    </application>
+
+        <activity android:name=".ResetPasswordActivity"/>
+        <!--android:noHistory="true"-->
+
+
+</application>
 
 </manifest>
