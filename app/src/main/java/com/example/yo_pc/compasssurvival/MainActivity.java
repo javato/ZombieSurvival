@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,15 +36,29 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.button;
+import static com.example.yo_pc.compasssurvival.R.id.imageView;
 
 public class MainActivity extends AppCompatActivity {
 
     public static Activity fa;
     public String welcome;
     public boolean emailVerified;
+
+    private Button mSelectImage;
+    private StorageReference mStorage;
+    private static final int GALLERY_INTENT = 2;
+    private static final int VOICE_INTENT = 1001;
+
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
 
@@ -51,14 +68,31 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
 
+    ImageView ivImageFromUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         fa = this;
+
 
         super.onCreate(savedInstanceState);
         //getSupportActionBar().setHomeButtonEnabled(true);
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        ivImageFromUrl = (ImageView)findViewById(R.id.iv_image_from_url);
+
+
+        //StorageReference urlPicture = mStorage.child("photos/" + auth.getCurrentUser().getUid().toString());
+
+        //String cadena2 = "photos/" + auth.getCurrentUser().getUid().toString();
+
+        //String cadena = auth.getCurrentUser().getUid().toString();
+        //Log.d("URL ENVIADA: ", urlPicture.getDownloadUrl().toString());
+        //Picasso.with(getApplication()).load(urlPicture.getDownloadUrl().toString()).resize(350,350).into(ivImageFromUrl);
+        //Picasso.with(getApplication()).load("https://image.freepik.com/iconos-gratis/instagram-logo_318-84939.jpg").into(ivImageFromUrl);
+
+
 
         //get firebase auth instance
         //auth = FirebaseAuth.getInstance();
@@ -158,7 +192,42 @@ public class MainActivity extends AppCompatActivity {
 
         }*/
 
+
+
+        mStorage = FirebaseStorage.getInstance().getReference();
+
+        StorageReference urlPicture = mStorage.child("photos/" + auth.getCurrentUser().getUid().toString());
+        Log.d("URL ENVIADA: ", urlPicture.getDownloadUrl().toString());
+
+        urlPicture.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+        {
+            @Override
+            public void onSuccess(Uri downloadUrl)
+            {
+                Log.d("URL DE DENTRO: ", downloadUrl.toString());
+                //Picasso.with(getApplication()).load(downloadUrl.toString()).resize(350,350).into(ivImageFromUrl);
+                //BUENO Picasso.with(getApplication()).load(downloadUrl.toString()).resizeDimen(25, 25).into(ivImageFromUrl);
+                Picasso.with(getApplication()).load(downloadUrl.toString()).memoryPolicy(MemoryPolicy.NO_STORE).resize(500, 500).into(ivImageFromUrl);
+            }
+        });
+
+
+        mSelectImage = (Button) findViewById(R.id.selectImage);
+        mSelectImage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, GALLERY_INTENT);
+            }
+        });
+
+
+
+        //Picasso.with(getApplication()).load("https://image.freepik.com/iconos-gratis/instagram-logo_318-84939.jpg").resizeDimen(25, 25).into(ivImageFromUrl);
+
     }
+
 
     public void startGame(View v){
 
@@ -181,9 +250,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void buttonRanking(View v){
-        Intent intent = new Intent(MainActivity.this, RankingActivity.class);
-        startActivity(intent);
+    public void buttonPicture(View v){
+        //Intent intent = new Intent(MainActivity.this, RankingActivity.class);
+        //startActivity(intent);
+
+
     }
 
     public void buttonNombreUsuario(View v){
@@ -193,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 
 
-        startActivityForResult(intent, 1001);
+        startActivityForResult(intent, VOICE_INTENT);
     }
 
     public void buttonProfile(View v){
@@ -236,7 +307,43 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         SharedPreferences sp = this.getSharedPreferences("com.example.yo_pc.compasssurvival", 0);
-        if (resultCode == RESULT_OK) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK){
+            Uri uri = data.getData();
+            Log.d("NOMBRE ARCHIVO: ", uri.toString());
+            Log.d("NOMBRE: ", uri.getLastPathSegment().toString());
+            final StorageReference filepath = mStorage.child("photos").child(auth.getCurrentUser().getUid().toString());
+            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(MainActivity.this, "Upload done", Toast.LENGTH_LONG).show();
+                    Log.d("URL: ", filepath.getDownloadUrl().toString());
+                    //Picasso.with(getApplication()).load("https://firebasestorage.googleapis.com/v0/b/mi-fabuloso-proyecto-9221e.appspot.com/o/photos%2F1912155.jpg?alt=media&token=1f7c6084-a2b3-4493-99b7-b42f6b6d310a").resize(350,350).into(ivImageFromUrl);
+
+                }
+            });
+
+            mStorage = FirebaseStorage.getInstance().getReference();
+
+
+            StorageReference urlPicture = mStorage.child("photos/" + auth.getCurrentUser().getUid().toString());
+            Log.d("URL ENVIADA: ", urlPicture.getDownloadUrl().toString());
+
+            urlPicture.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+            {
+                @Override
+                public void onSuccess(Uri downloadUrl)
+                {
+                    Log.d("URL DE DENTRO: ", downloadUrl.toString());
+                    //Picasso.with(getApplication()).load(downloadUrl.toString()).resize(500, 500).into(ivImageFromUrl);
+                    Picasso.with(getApplication()).load(downloadUrl.toString()).memoryPolicy(MemoryPolicy.NO_STORE).resize(500, 500).into(ivImageFromUrl);
+                }
+            });
+        }
+
+        if (requestCode == VOICE_INTENT && resultCode == RESULT_OK) {
             tvNombreUsuario = (TextView) findViewById(R.id.tvNombreUsuario);
             ArrayList<String> textMatchlist = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String nameUser = textMatchlist.get(0).toString();

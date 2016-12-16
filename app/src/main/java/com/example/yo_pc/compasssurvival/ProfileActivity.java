@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import static java.lang.Thread.sleep;
 
@@ -32,6 +34,8 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private String uid;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    private StorageReference mStorage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,6 +293,13 @@ public class ProfileActivity extends AppCompatActivity {
                                         progressBar.setVisibility(View.GONE);
                                         finish();
                                         mRootRef.child("users").child(user.getUid()).removeValue();
+
+                                        // delete profile picture asociated with the user we are removing
+                                        // commented due a bug in firebase rules
+                                        /*mStorage = FirebaseStorage.getInstance().getReference();
+                                        StorageReference urlPicture = mStorage.child("photos/" + user.getUid().toString());
+                                        Log.d("BORRADO URL: ", urlPicture.toString());
+                                        urlPicture.delete();*/
 
 
                                     } else {

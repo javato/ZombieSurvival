@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Ajustes"
+        android:text="Settings"
         android:id="@+id/textView2"
         android:textSize="45dp"
         android:layout_alignParentTop="true"
@@ -22,7 +22,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test daltonismo"
+        android:text="Daltonism Test"
         android:id="@+id/buttonEjecutarTest"
         android:onClick="ejecutarTest"
         android:layout_alignParentBottom="true"
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Opciones daltonismo:"
+        android:text="Daltonism configuration:"
         android:id="@+id/textView3"
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
@@ -91,7 +91,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ninguna"
+            android:text="None"
             android:id="@+id/radioButton4"
             android:checked="false"
             android:textColor="#ffffff"
@@ -103,7 +103,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Aplicar"
+        android:text="Apply"
         android:id="@+id/buttonAplicar"
         android:layout_alignTop="@+id/buttonEjecutarTest"
         android:layout_alignParentLeft="true"
@@ -116,7 +116,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Opciones"
+        android:text="Options"
         android:id="@+id/textView4"
         android:textColor="#ffffff"
         android:layout_above="@+id/radioGroup"
@@ -126,7 +126,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vibracion activada"
+        android:text="Vibration enabled"
         android:id="@+id/checkBox"
         android:textColor="#ffffff"
         android:backgroundTint="#ffffff"
@@ -135,36 +135,10 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Efectos de sonido"
-        android:id="@+id/checkBox2"
-        android:textColor="#ffffff"
-        android:backgroundTint="#ffffff"
-        android:buttonTint="#ffffff"
-        android:checked="false"
-        android:layout_below="@+id/checkBox"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Musica ambiental"
-        android:id="@+id/checkBox3"
-        android:textColor="#ffffff"
-        android:backgroundTint="#ffffff"
-        android:buttonTint="#ffffff"
-        android:checked="false"
-        android:layout_below="@+id/checkBox2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Elegir Personaje"
+        android:text="Choose Character"
         android:id="@+id/buttonEscanear"
         android:layout_alignBottom="@+id/buttonEjecutarTest"
         android:layout_centerHorizontal="true"
@@ -186,4 +160,30 @@
         android:id="@+id/tvContent"
         android:layout_below="@+id/tvFormat"
         android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sound Effects"
+        android:id="@+id/checkBox2"
+        android:textColor="#ffffff"
+        android:backgroundTint="#ffffff"
+        android:buttonTint="#ffffff"
+        android:checked="false"
+        android:layout_below="@+id/checkBox"
+        android:layout_alignLeft="@+id/checkBox"
+        android:layout_alignStart="@+id/checkBox" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Music"
+        android:id="@+id/checkBox3"
+        android:textColor="#ffffff"
+        android:backgroundTint="#ffffff"
+        android:buttonTint="#ffffff"
+        android:checked="false"
+        android:layout_below="@+id/checkBox2"
+        android:layout_alignLeft="@+id/checkBox2"
+        android:layout_alignStart="@+id/checkBox2" />
 </RelativeLayout>

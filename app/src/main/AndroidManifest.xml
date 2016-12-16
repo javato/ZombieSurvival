@@ -17,10 +17,9 @@
             android:name=".ProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main" >
-        </activity>
-
-        <activity android:name=".splashActivity"
+            android:theme="@style/Theme.Main"></activity>
+        <activity
+            android:name=".splashActivity"
             android:label="@string/app_name"
             android:noHistory="true"
             android:screenOrientation="landscape"
@@ -35,8 +34,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.Main"
-            />
+            android:theme="@style/Theme.Main" />
         <activity
             android:name=".RankingActivity"
             android:label="@string/app_name"
@@ -79,17 +77,15 @@
         <activity
             android:name=".SignupActivity"
             android:label="@string/title_activity_signup"
-            android:theme="@style/AppTheme"/>
-        <!--android:noHistory="true"-->
+            android:theme="@style/AppTheme" />
+        <!-- android:noHistory="true" -->
 
-        <activity android:name=".LoginActivity"/>
-        <!--android:noHistory="true"-->
+        <activity android:name=".LoginActivity" />
+        <!-- android:noHistory="true" -->
 
+        <activity android:name=".ResetPasswordActivity" />
+        <!-- android:noHistory="true" -->
 
-        <activity android:name=".ResetPasswordActivity"/>
-        <!--android:noHistory="true"-->
-
-
-</application>
+    </application>
 
 </manifest>
