@@ -235,7 +235,8 @@ public class MainActivity extends AppCompatActivity {
         //FirebaseAuth auth1;
         //auth1 = FirebaseAuth.getInstance();
 
-        if(!welcome.toString().equals("Name doesn't establisheddd")){
+        // no se puede empezar el juego sin un nombre establecido
+        if(!welcome.toString().equals("Name doesn't established")){
             Intent intent = new Intent(MainActivity.this, PopUpMapas.class);
             startActivity(intent);
         }

@@ -103,7 +103,7 @@ public class AccesibilidadActivity extends AppCompatActivity implements OnClickL
         //Log.d("checkbox: ", Integer.toString(spp.getInt("vibracionEnabled", 1)));
 
         AlertDialog.Builder ajustesAlert = new AlertDialog.Builder(this);
-        ajustesAlert.setMessage("Ajustes aplicados")
+        ajustesAlert.setMessage("Settings applied")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
                     // Codigo a ejecutar cuando pulsemos "Ajustes..."
                     public void onClick(DialogInterface dialog, int which){
