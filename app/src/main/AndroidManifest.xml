@@ -42,7 +42,7 @@
             android:theme="@style/Theme.Main" />
         <activity
             android:name=".Juego"
-            android:label="Compass Survival"
+            android:label="@string/app_name"
             android:screenOrientation="landscape">
 
             <!--
@@ -70,7 +70,7 @@
             android:theme="@style/Theme.Main" />
         <activity
             android:name=".PopUpMapas"
-            android:label="Compass Survival"
+            android:label="@string/app_name"
             android:noHistory="true"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.CustomTheme" />
