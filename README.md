@@ -1,4 +1,4 @@
-# SurvivalCompass
+# ZombieCompass
 Android game developed with Android Studio
 
 this game contains:
